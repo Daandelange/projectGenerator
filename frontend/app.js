@@ -5,6 +5,7 @@
 var ipc = require('ipc');
 var path = require('path');
 var fs = require('fs');
+var addonWatcher;
 
 
 var platforms;
@@ -352,6 +353,19 @@ function setOFPath(arg) {
             elem.value = arg;
         }
     }
+
+    // if already watching, unwatch
+    if( addonWatcher ){
+        addonWatcher.close();
+    }
+
+    // watch the addons forlder for changes
+    var fs_tmp = require('fs');
+    addonWatcher = fs.watch( path.join(arg, 'addons'), { persistent: true, recursive: false }, function (event, fileName) {
+        if(event==='rename'){ // renaming / adding / removing files (other option is 'change')
+            ipc.send('refreshAddonList', $("#ofPath").val() );
+        }
+    });
 
     $("#ofPath").trigger('change');
 }
