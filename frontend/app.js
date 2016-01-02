@@ -142,12 +142,14 @@ ipc.on('setAddons', function(arg) {
     }
 
 
-  $('#addonsDropdown')
+    $('#addonsDropdown')
         .dropdown({
             allowAdditions: false,
             fullTextSearch: false,
             match: "text"
         });
+    
+    $("#projectName").triggerHandler('change');
 });
 
 
